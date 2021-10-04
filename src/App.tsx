@@ -1,5 +1,9 @@
 import React from 'react';
 
+import Home from './pages/Home';
+import Login from './pages/Login';
+
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,11 +19,8 @@ function App() {
         <Route exact path="/">
           <Home />
         </Route>
-        <Route path="/about">
-          <About />
-        </Route>
-        <Route path="/dashboard">
-          <Dashboard />
+        <Route path="/login">
+          <Login />
         </Route>
       </Switch>
     </div>
@@ -27,62 +28,5 @@ function App() {
   );
 }
 
-
-function Home() {
-  return (
-    <div>
-      <h2>Home</h2>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/about">About</Link>
-        </li>
-        <li>
-          <Link to="/dashboard">Dashboard</Link>
-        </li>
-      </ul>
-    </div>
-  );
-}
-
-function About() {
-  return (
-    <div>
-      <h2>About</h2>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/about">About</Link>
-        </li>
-        <li>
-          <Link to="/dashboard">Dashboard</Link>
-        </li>
-      </ul>
-    </div>
-  );
-}
-
-function Dashboard() {
-  return (
-    <div>
-      <h2>Dashboard</h2>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/about">About</Link>
-        </li>
-        <li>
-          <Link to="/dashboard">Dashboard</Link>
-        </li>
-      </ul>
-    </div>
-  );
-}
 
 export default App;
