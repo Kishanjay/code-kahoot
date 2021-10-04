@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Button } from '../components';
 
 export default function Home() {
     return (
@@ -30,10 +31,9 @@ export default function Home() {
 			<h1 className="my-4 text-3xl md:text-5xl text-purple-800 font-bold leading-tight text-center md:text-left slide-in-bottom-h1">Challenge your friends and collegues</h1>
 			<p className="leading-normal text-base md:text-2xl mb-8 text-center md:text-left slide-in-bottom-subtitle">Find out in a fun and interactive way who is the best coder amoung us!</p>
 		
-			<p className="text-blue-400 font-bold pb-8 lg:pb-6 text-center md:text-left fade-in">Start now</p>
 			<div className="flex w-full justify-center md:justify-start pb-24 lg:pb-0 fade-in">
-				Host a game
-				Join a game
+				<Button className="mr-2" variant="secondary">Host a game</Button>
+				<Button>Join a game</Button>
 			</div>
 
 		</div>
