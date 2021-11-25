@@ -1,0 +1,47 @@
+{
+  "rules": {
+    ".read": true,
+    "gameRooms": {      
+      "$gameRoomId": {
+        ".read": true,
+        // If there is no entry yet OR if it is the entry of the current user.
+        // Assert that the newData.gameHostPlayrId remains that of the current user.
+        ".write": "(!data.exists() || data.child('gameHostPlayerId').val() === auth.uid) && newData.child('gameHostPlayerId').val() === auth.uid",
+        
+        // Only the host can edit the fields of the gameroom
+        // "gameRoomId": {
+        //   ".write": "root.child('gamerooms').child($uid).child('gameHostPlayerId').val() === auth.id",  
+        // },
+        // "gameHasStarted": {
+        //   ".write": "root.child('gamerooms').child($uid).child('gameHostPlayerId').val() === auth.id",  
+        // },
+        // "currentGameRound": {
+        //   ".write": "root.child('gamerooms').child($uid).child('gameHostPlayerId').val() === auth.id",  
+        // },
+        // "gameHostPlayerId": { 
+        //   ".write": false
+        // },
+
+        "players": {
+          "$pid": {
+            // Players should be able to join the gameroom
+            // Note: this cannot be an array due to database.rules limitations
+            ".write": "$pid === auth.uid"
+          }
+        },
+
+        "gameRounds": {
+          "$gameRoundId": {
+            "players": {
+              "$playerId": {
+                // Players can only submit entries for themselves and ONLY for 
+                // the current game round.
+                ".write": "$playerId === auth.uid && root.child('gameRooms').child($gameRoomId).child('currentGameRound').val() === $gameRoundId"
+              }
+            } 
+          }
+        }
+      }
+    }
+  }
+}

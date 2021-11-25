@@ -4,9 +4,10 @@ export type GameRound = {
     
     players: {
         [id: string]: {
-            solution: string,
-            passingUnitTests: number,
-            isCorrect: boolean,
+            currentSolution: string,
+            numberOfPassingUnitTests: number,
+
+            isFinished: boolean,
             timeTaken: number,
         } 
     }
