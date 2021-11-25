@@ -6,9 +6,26 @@ challenges.
 # Development
 
 Start-up the dev environment
-
 ```
 firebase emulators:start 
+```
+
+Create the `.env` by exporting the firebase config as JSON (manually)
+```
+openssl base64 -in env.json | tr -d '\n' | pbcopy
+```
+
+Example `env.json`
+```json
+{
+  "apiKey": "-",
+  "authDomain": "-",
+  "databaseURL": "-",
+  "projectId": "-",
+  "storageBucket": "-",
+  "messagingSenderId": "-",
+  "appId": "-"
+}
 ```
 
 # TODO
