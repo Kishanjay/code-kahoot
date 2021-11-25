@@ -7,4 +7,13 @@ module.exports = {
       ],
     },
   },
+  jest: {
+    configure: {
+      globals: {
+        "CONFIG": true
+      },
+      roots: ['./'],
+      testMatch: "<rootDir>**/*.test.{js,ts}"
+    }
+  }
 }
