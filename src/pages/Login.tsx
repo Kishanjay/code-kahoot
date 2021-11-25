@@ -87,7 +87,7 @@ export default function Login() {
           </form>
           <div className="text-center pt-12 pb-12">
             <p>
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <a href="register.html" className="underline font-semibold">
                 Register here.
               </a>

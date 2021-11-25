@@ -14,6 +14,7 @@ export default function Button({
   children,
   className = "",
   variant = "primary",
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onClick = () => {},
 }: ButtonType) {
   const buttonClasses = []
