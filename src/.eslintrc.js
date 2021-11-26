@@ -27,6 +27,7 @@ module.exports = {
       "error",
       {
         semi: false,
+        endOfLine: "auto",
       },
     ],
     "react/jsx-filename-extension": [

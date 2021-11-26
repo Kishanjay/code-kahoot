@@ -1,7 +1,7 @@
 import React from "react"
 
 import Home from "./pages/Home"
-import Host from "./pages/Host"
+import HostView from "./pages/HostView"
 import Login from "./pages/Login"
 
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom"
@@ -14,8 +14,8 @@ function App() {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route path="/host">
-            <Host />
+          <Route path="/hostview">
+            <HostView />
           </Route>
           <Route path="/login">
             <Login />

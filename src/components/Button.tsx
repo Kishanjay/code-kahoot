@@ -19,7 +19,7 @@ export default function Button({
 }: ButtonType) {
   const buttonClasses = []
 
-  const buttonBaseClasses = "font-bold text-lg hover:bg-gray-700 py-3 px-8 mt-8"
+  const buttonBaseClasses = "font-bold text-lg hover:bg-gray-700 py-3 px-8"
   buttonClasses.push(buttonBaseClasses)
 
   const buttonVariantClasses = {
