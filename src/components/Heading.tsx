@@ -1,10 +1,10 @@
 import React from "react"
 
-type HeadingTags = "h1" | "h2" | "h3" | "h4" | "h5"
+type HeadingTags = "h1" | "h2" | "h3" | "h4" | "h5" | "span"
 
 type HeadingProps = {
   as: HeadingTags
-  style?: HeadingTags
+  asStyle?: HeadingTags
   variant: "default" | "primary" | "secondary" | "accent"
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: any // TODO fix this type
@@ -17,10 +17,11 @@ const tagClasses: Record<HeadingTags, string> = {
   h3: "text-xl",
   h4: "text-md",
   h5: "text-sm",
+  span: "",
 }
 
 export default function Heading(props: HeadingProps) {
-  const tagStyle: HeadingTags = props.style || props.as
+  const tagStyle: HeadingTags = props.asStyle || props.as
   const classNames = [defaultHeadingClasses, tagClasses[tagStyle]].join(" ")
 
   return React.createElement(

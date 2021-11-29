@@ -1,10 +1,10 @@
 import React, { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useHistory } from "react-router-dom"
 import { Button } from "../components"
 import Input from "../components/Input"
 import { GameRoom } from "../models/gameRoom.model"
 import { gameRoomRepo } from "../repositories/factory"
-import { createGame, joinGame } from "../services/game.service"
+import { createGameRoom, joinGame } from "../services/gameRoom.service"
 
 import Navbar from "./_partials/Navbar"
 
@@ -14,19 +14,21 @@ enum HomeMode {
   JOIN,
 }
 export default function Home() {
-  const [joinGameId, setJoinGameId] = useState("")
-  const [newGameName, setNewGameName] = useState("")
+  const history = useHistory()
+  const [joinGameRoomId, setJoinGameRoomId] = useState("")
+  const [newGameRoomName, setNewGameRoomName] = useState("")
 
   async function hostNewGame() {
-    const game = await createGame(gameRoomRepo, joinGameId)
+    const gameRoom = await createGameRoom(gameRoomRepo, joinGameRoomId)
 
-    // TODO redirect to hostview/game.id
+    const gameRoomId = gameRoom.id
+    history.push("/hostview/" + gameRoomId)
   }
 
   async function joinExistingGame() {
-    const game = await joinGame(joinGameId)
+    const game = await joinGame(joinGameRoomId)
 
-    // TODO redirect to play/game.id
+    history.push("/gameview/" + joinGameRoomId)
   }
 
   const [homeMode, setHomeMode] = useState(HomeMode.DEFAULT)
@@ -62,23 +64,19 @@ export default function Home() {
 
           {homeMode === HomeMode.HOST && (
             <div className="flex w-full justify-center md:justify-start pb-24 lg:pb-0 fade-in">
-              <Input placeholder="Roomname" onChange={setNewGameName} />
-              <Link to="hostview">
-                <Button variant="accent" onClick={() => hostNewGame()}>
-                  HOST GAME
-                </Button>
-              </Link>
+              <Input placeholder="Roomname" onChange={setNewGameRoomName} />
+              <Button variant="accent" onClick={() => hostNewGame()}>
+                HOST GAME
+              </Button>
             </div>
           )}
 
           {homeMode === HomeMode.JOIN && (
             <div className="flex w-full justify-center md:justify-start pb-24 lg:pb-0 fade-in">
-              <Input placeholder="Roomname" onChange={setJoinGameId} />
-              <Link to="gameview">
-                <Button variant="primary" onClick={() => joinExistingGame()}>
-                  JOIN GAME
-                </Button>
-              </Link>
+              <Input placeholder="RoomId" onChange={setJoinGameRoomId} />
+              <Button variant="primary" onClick={() => joinExistingGame()}>
+                JOIN GAME
+              </Button>
             </div>
           )}
         </div>

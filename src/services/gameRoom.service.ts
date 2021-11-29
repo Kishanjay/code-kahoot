@@ -4,10 +4,10 @@ import { gameRoomRepo } from "../repositories/factory"
 import { GameRoomRepo } from "../repositories/gameRoom.repo"
 
 /**
- * End-to-end feature to creating new games.
- * creates a new game given a host user
+ * End-to-end feature to creating new gamerooms.
+ * creates a new gameroom given a host user
  */
-export async function createGame(
+export async function createGameRoom(
   gameRoomRepo: GameRoomRepo,
   gameName: string
 ): Promise<GameRoom> {
@@ -40,8 +40,8 @@ export async function createGame(
   return game
 }
 
-export async function joinGame(gameId: string) {
+export async function joinGame(gameRoomId: string) {
   const user = await login()
 
-  await gameRoomRepo.playerJoinGame(gameId, user.uid)
+  await gameRoomRepo.playerJoinGame(gameRoomId, user.uid)
 }

@@ -1,9 +1,9 @@
 import React from "react"
 import { Heading, Level } from "../../components"
-import { GameRoundPlayerData } from "../../models/gameRoundPlayerData.model"
+import { GameRoundPlayerSubmission } from "../../models/gameRoundPlayerSubmission.model"
 
 export default function HostViewMonitorPlayer(props: any) {
-  const playerSubmission: GameRoundPlayerData = props.submission
+  const playerSubmission: GameRoundPlayerSubmission = props.submission
   const playerId: string = props.playerId
   const playerName: string = props.name
 

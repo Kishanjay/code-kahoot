@@ -1,4 +1,4 @@
-export type GameRoundPlayerData = {
+export type GameRoundPlayerSubmission = {
   currentSolution: string
   numberOfPassingUnitTests: number
 

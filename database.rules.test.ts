@@ -238,7 +238,7 @@ describe("Gameroom ADD gameround", () => {
     const gameRoomRepo = new GameRoomRepo(db)
 
     await assertFails(
-      gameRoomRepo.addGameRound(DEFAULT_GAME_ROOM.id, 0, {
+      gameRoomRepo.addGameRound(DEFAULT_GAME_ROOM.id, "0", {
         title: "gameroundtitle",
         description: "gamerounddescription",
       })
@@ -262,6 +262,111 @@ describe("Gameroom ADD gameround", () => {
       defaultGameRoomRepo.addGameRound(DEFAULT_GAME_ROOM.id, 0, {
         title: "gameroundtitle",
         description: "gamerounddescription",
+      })
+    )
+  })
+})
+
+describe("Gameroom UPDATE gameround", () => {
+  const DEFAULT_USER_ID = "default-user"
+  const DEFAULT_GAME_ROOM: Partial<GameRoom> = {
+    id: "default-gameroom",
+    gameHostPlayerId: DEFAULT_USER_ID,
+    gameRounds: [{
+      title: "default-gameround-title",
+      description: "default-gameround-description",
+      players: {},
+      unitTests: [{
+        input: "default-unittest-input",
+        expectedOutput: "default-unittest-output"
+      }]
+    }]
+  }
+  let defaultGameRoomRepo: GameRoomRepo
+
+
+  beforeAll(async () => {
+    // provision default object to use
+    defaultGameRoomRepo = new GameRoomRepo(getDatabase(DEFAULT_USER_ID))
+  })
+
+  beforeEach(async () => {
+    // assert a gameroom exists
+    await defaultGameRoomRepo.createGameRoom(DEFAULT_GAME_ROOM)
+  })
+
+  it("Denies UNAUTHENTICATED users to UPDATE gameround", async () => {
+    const db = getDatabase()
+    const gameRoomRepo = new GameRoomRepo(db)
+
+    await assertFails(
+      gameRoomRepo.addGameRound(DEFAULT_GAME_ROOM.id, "0", {
+        title: "gameroundtitle",
+        description: "gamerounddescription",
+      })
+    )
+  })
+
+  it("Denies AUTHENTICATED user to UPDATE gameround FOR ANOTHER USER", async () => {
+    const db = getDatabase("another-user")
+    const gameRoomRepo = new GameRoomRepo(db)
+
+    await assertFails(
+      gameRoomRepo.updateGameRound(DEFAULT_GAME_ROOM.id, "0", {
+        title: "gameroundtitle",
+        description: "gamerounddescription",
+      })
+    )
+  })
+
+  it("Allows AUTHENTICATED user to UPDATE gameround", async () => {
+    await assertSucceeds(
+      defaultGameRoomRepo.updateGameRound(DEFAULT_GAME_ROOM.id, "0", {
+        title: "gameroundtitle",
+        description: "gamerounddescription",
+      })
+    )
+  })
+
+  it("Allows AUTHENTICATED user to ADD gameround unittest", async () => {
+    await assertSucceeds(
+      defaultGameRoomRepo.addGameRoundUnitTest(DEFAULT_GAME_ROOM.id, "0", "1", {
+        input: "unittest-input",
+        expectedOutput: "unittest-output"
+      })
+    )
+  })
+
+
+  it("Denies AUTHENTICATED user to ADD gameround unittest FOR ANOTHER USER", async () => {
+    const db = getDatabase("another-user")
+    const gameRoomRepo = new GameRoomRepo(db)
+
+    await assertFails(
+      gameRoomRepo.addGameRoundUnitTest(DEFAULT_GAME_ROOM.id, "0", "1", {
+        input: "unittest-input",
+        expectedOutput: "unittest-output"
+      })
+    )
+  })
+
+  it("Allows AUTHENTICATED user to UPDATE gameround unittest", async () => {
+    await assertSucceeds(
+      defaultGameRoomRepo.addGameRoundUnitTest(DEFAULT_GAME_ROOM.id, "0", "0", {
+        input: "updated-unittest-input",
+        expectedOutput: "updated-unittest-output"
+      })
+    )
+  })
+
+  it("Denies AUTHENTICATED user to UPDATE gameround unittest FOR ANOTHER USER", async () => {
+    const db = getDatabase("another-user")
+    const gameRoomRepo = new GameRoomRepo(db)
+
+    await assertFails(
+      gameRoomRepo.addGameRoundUnitTest(DEFAULT_GAME_ROOM.id, "0", "0", {
+        input: "unittest-input",
+        expectedOutput: "unittest-output"
       })
     )
   })

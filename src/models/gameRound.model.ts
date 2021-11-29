@@ -1,12 +1,13 @@
-import { GameRoundPlayerData } from "./gameRoundPlayerData.model"
+import { GameRoundPlayerSubmission } from "./gameRoundPlayerSubmission.model"
+import { GameRoundUnitTest } from "./gameRoundUnitTest"
 
 export type GameRound = {
   title: string
   description: string
 
   players: {
-    [id: string]: GameRoundPlayerData
+    [id: string]: GameRoundPlayerSubmission
   }
 
-  unitTests: { input: string; expectedOutput: string }[]
+  unitTests: GameRoundUnitTest[]
 }

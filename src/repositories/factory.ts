@@ -28,4 +28,4 @@ if (window.location.hostname === "localhost") {
 }
 console.log("factory", process.env)
 
-export const gameRoomRepo = new GameRoomRepo(db)
+export const gameRoomRepo: GameRoomRepo = new GameRoomRepo(db)
