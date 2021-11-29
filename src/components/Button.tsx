@@ -1,8 +1,9 @@
 import React, { ReactChildren, ReactChild } from "react"
 
-export type ChildType = ReactChildren | ReactChild
+// TODO put in a global type declaration?
+export type ChildType = ReactChildren | ReactChild | ChildType[]
 
-type ButtonVariant = "primary" | "secondary"
+type ButtonVariant = "primary" | "secondary" | "accent"
 type ButtonType = {
   children?: ChildType
   className?: string
@@ -25,6 +26,7 @@ export default function Button({
   const buttonVariantClasses = {
     primary: "bg-purple-800 text-white",
     secondary: "bg-black text-white",
+    accent: "bg-yellow-600 text-white",
   }
   buttonClasses.push(buttonVariantClasses[variant])
   if (className) {

@@ -1,25 +1,19 @@
-import { getAuth, signInAnonymously } from "firebase/auth"
+import { getAuth, signInAnonymously, User } from "firebase/auth"
 
-export async function login() {
+export async function login(): Promise<User> {
   const auth = getAuth()
 
   if (auth.currentUser) {
     // contains the loggedin user
-    return auth.currentUser.uid
+    return auth.currentUser
   }
 
-  return signInAnonymously(auth)
-    .then((res) => {
-      console.log({ res })
-      // Signed in..
-      console.log("signed in!!")
-      return res.user
-    })
-    .catch((error) => {
-      const errorCode = error.code
-      const errorMessage = error.message
-      // ...
-    })
+  return signInAnonymously(auth).then((res) => {
+    console.log({ res })
+    // Signed in..
+    console.log("signed in!!")
+    return res.user
+  })
 }
 
 export function register() {

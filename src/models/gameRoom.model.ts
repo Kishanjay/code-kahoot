@@ -13,5 +13,9 @@ export type GameRoom = {
 
   // Not sure yet what this player object should look like. This is only to
   // be used to keep track of which players are playing.
-  players: { [pid: string]: any }
+  players: {
+    [pid: string]: {
+      name: string
+    }
+  }
 }

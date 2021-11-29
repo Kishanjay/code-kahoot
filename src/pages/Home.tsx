@@ -4,6 +4,8 @@ import { Button } from "../components"
 import Input from "../components/Input"
 import { GameRoom } from "../models/gameRoom.model"
 import { gameRoomRepo } from "../repositories/factory"
+import { createGame, joinGame } from "../services/game.service"
+
 import Navbar from "./_partials/Navbar"
 
 enum HomeMode {
@@ -12,17 +14,21 @@ enum HomeMode {
   JOIN,
 }
 export default function Home() {
-  function test() {
-    const game: Partial<GameRoom> = {
-      id: "234234324",
-      gameHostPlayerId: "test", // Math.floor(Math.random()*100000) + " ",
-      players: [],
-      gameRounds: [],
-      gameHasStarted: false,
-      currentGameRound: "0",
-    }
-    gameRoomRepo.createGameRoom(game)
+  const [joinGameId, setJoinGameId] = useState("")
+  const [newGameName, setNewGameName] = useState("")
+
+  async function hostNewGame() {
+    const game = await createGame(gameRoomRepo, joinGameId)
+
+    // TODO redirect to hostview/game.id
   }
+
+  async function joinExistingGame() {
+    const game = await joinGame(joinGameId)
+
+    // TODO redirect to play/game.id
+  }
+
   const [homeMode, setHomeMode] = useState(HomeMode.DEFAULT)
 
   return (
@@ -48,17 +54,30 @@ export default function Home() {
               >
                 Host a game
               </Button>
-              <Link to="/login">
-                <Button>Join a game</Button>
-              </Link>
+              <Button onClick={() => setHomeMode(HomeMode.JOIN)}>
+                Join a game
+              </Button>
             </div>
           )}
 
           {homeMode === HomeMode.HOST && (
             <div className="flex w-full justify-center md:justify-start pb-24 lg:pb-0 fade-in">
-              <Input placeholder="Roomname" />
+              <Input placeholder="Roomname" onChange={setNewGameName} />
               <Link to="hostview">
-                <Button variant="secondary">HOST GAME</Button>
+                <Button variant="accent" onClick={() => hostNewGame()}>
+                  HOST GAME
+                </Button>
+              </Link>
+            </div>
+          )}
+
+          {homeMode === HomeMode.JOIN && (
+            <div className="flex w-full justify-center md:justify-start pb-24 lg:pb-0 fade-in">
+              <Input placeholder="Roomname" onChange={setJoinGameId} />
+              <Link to="gameview">
+                <Button variant="primary" onClick={() => joinExistingGame()}>
+                  JOIN GAME
+                </Button>
               </Link>
             </div>
           )}

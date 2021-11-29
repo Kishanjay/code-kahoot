@@ -1,16 +1,12 @@
+import { GameRoundPlayerData } from "./gameRoundPlayerData.model"
+
 export type GameRound = {
-    title: string,
-    description: string,
-    
-    players: {
-        [id: string]: {
-            currentSolution: string,
-            numberOfPassingUnitTests: number,
+  title: string
+  description: string
 
-            isFinished: boolean,
-            timeTaken: number,
-        } 
-    }
+  players: {
+    [id: string]: GameRoundPlayerData
+  }
 
-    unitTests: { input: string, expectedOutput: string }[],
+  unitTests: { input: string; expectedOutput: string }[]
 }
