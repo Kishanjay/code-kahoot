@@ -16,7 +16,7 @@ export default function HostViewMonitorPlayer(props: any) {
       {playerSubmission ? (
         <div>
           <p>{playerSubmission.currentSolution}</p>
-          <div>{playerSubmission.numberOfPassingUnitTests}</div>
+          <div>{playerSubmission.currentNumberOfPassingUnitTests}</div>
           <div>{playerSubmission.isFinished}</div>
           <div>{playerSubmission.timeTaken}</div>
         </div>

@@ -29,7 +29,7 @@ export async function createGameRoom(
         players: {},
       },
     ],
-    currentGameRound: "0",
+    currentGameRound: 0,
     players: {
       "32424": { name: "Kishan" },
       "12234": { name: "Jayant" },

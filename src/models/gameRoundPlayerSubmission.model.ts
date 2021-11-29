@@ -1,7 +1,9 @@
 export type GameRoundPlayerSubmission = {
   currentSolution: string
-  numberOfPassingUnitTests: number
+  currentNumberOfPassingUnitTests: number
+
+  numberOfSubmissions: number
 
   isFinished: boolean
-  timeTaken: number
+  timeTaken: number // TODO restrict so that only host can set this value
 }

@@ -9,7 +9,7 @@ export type GameRoom = {
 
   gameHasStarted: boolean
   gameRounds: GameRound[]
-  currentGameRound: string
+  currentGameRound: number
 
   // Not sure yet what this player object should look like. This is only to
   // be used to keep track of which players are playing.

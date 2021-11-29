@@ -7,8 +7,7 @@ import HostViewMonitorPlayer from "./HostViewMonitorPlayer"
 export default function HostViewMonitor(props: any) {
   const game: GameRoom = props.game
 
-  const currentGameRound: GameRound =
-    game.gameRounds[parseInt(game.currentGameRound)]
+  const currentGameRound: GameRound = game.gameRounds[game.currentGameRound]
 
   return (
     <div>
@@ -19,9 +18,9 @@ export default function HostViewMonitor(props: any) {
           <div
             key={i}
             className={`flex items-center justify-center w-16 h-16
-              ${i < parseInt(game.currentGameRound) && "bg-green-100"}
-              ${i === parseInt(game.currentGameRound) && "bg-red-100"}
-              ${i > parseInt(game.currentGameRound) && "bg-gray-100"}
+              ${i < game.currentGameRound && "bg-green-100"}
+              ${i === game.currentGameRound && "bg-red-100"}
+              ${i > game.currentGameRound && "bg-gray-100"}
             `}
           >
             {i + 1}

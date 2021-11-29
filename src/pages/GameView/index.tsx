@@ -13,21 +13,24 @@ type GameViewParams = {
   gameRoomId: string
 }
 
-enum Status {
-  WAITING,
-  CODING,
-  FINISHED,
+enum RoundStatus {
+  Loading,
+  Coding,
+  Finished,
 }
 
 export default function GameView() {
+  const { gameRoomId } = useParams<GameViewParams>()
+
+  const [roundStatus, setRoundStatus] = useState(RoundStatus.Loading)
   const [timerValue, setTimerValue] = useState(0)
-  const [status, setStatus] = useState(Status.WAITING)
+
+  const [gameRoom, setGameRoom] = useState<GameRoom>() // Synced with realtime database
+  const [playerSolution, setPlayerSolution] = useState("")
   const [passingUnitTests, setPassingUnitTests] = useState(0)
   const [totalUnitTests, setTotalUnitTests] = useState(0)
-  const { gameRoomId } = useParams<GameViewParams>()
-  const [gameRoom, setGameRoom] = useState<GameRoom>() // Synced with realtime database
-  const [challengeDescription, setChallengeDescription] = useState("")
-  const [playerSolution, setPlayerSolution] = useState("")
+  const [numberOfSubmissions, setNumberOfSubmissions] = useState(-1)
+
   const [leaderboardData, setLeaderbordData] = useState<any>([])
 
   async function updatePlayerCode(code: string) {
@@ -37,15 +40,28 @@ export default function GameView() {
 
     await gameRoomRepo.playerUpdateGameRoundSubmission(
       gameRoomId,
-      gameRoom?.currentGameRound,
+      gameRoom?.currentGameRound.toString(),
       user.uid,
       { currentSolution: code }
     )
   }
 
+  function _setTimerValue(fn: (old: number) => number) {
+    if (roundStatus === RoundStatus.Finished) {
+      return
+    }
+
+    setTimerValue(fn)
+  }
   function submitSolution() {
     if (!gameRoom) {
       throw Error("Failed submitting solution [GameRoom not found]")
+    }
+
+    const gameRound = gameRoom.gameRounds[gameRoom.currentGameRound]
+    const player = gameRound.players[user.uid]
+    if (player.isFinished) {
+      throw Error("You're already finished bruf")
     }
 
     window.eval(playerSolution)
@@ -54,7 +70,6 @@ export default function GameView() {
       throw Error("Please do not rename the function")
     }
 
-    const gameRound = gameRoom.gameRounds[parseInt(gameRoom.currentGameRound)]
     const unitTests: GameRoundUnitTest[] = gameRound.unitTests
     let unitTestsPassed = 0
     for (const test of unitTests) {
@@ -72,47 +87,31 @@ export default function GameView() {
 
     gameRoomRepo.playerUpdateGameRoundSubmission(
       gameRoomId,
-      gameRoom?.currentGameRound,
+      gameRoom?.currentGameRound.toString(),
       user.uid,
       {
         currentSolution: playerSolution,
-        numberOfPassingUnitTests: unitTestsPassed,
-        timeTaken: timerValue,
+        currentNumberOfPassingUnitTests: unitTestsPassed,
         isFinished: playerIsFinished,
+        timeTaken: timerValue,
+        numberOfSubmissions: (player.numberOfSubmissions || 0) + 1,
       }
     )
 
     setPassingUnitTests(unitTestsPassed)
   }
 
-  // trigger counter
-  useEffect(() => {
-    if (status === Status.CODING) {
-      const timer = window.setInterval(() => {
-        setTimerValue((prevTimerValue) => prevTimerValue + 0.1)
-      }, 100)
-
-      return () => {
-        clearTimeout(timer)
-      }
-    }
-  }, [status])
-
-  /**
-   * OnLoad
-   */
   useEffect(() => {
     if (!gameRoom) {
       return
     }
-    const gameRound = gameRoom.gameRounds[parseInt(gameRoom.currentGameRound)]
-    const currentChallengeDescription = gameRoom.gameHasStarted
-      ? gameRound.description
-      : "// Challenge will be shown once game starts"
+    const gameRound = gameRoom.gameRounds[gameRoom.currentGameRound]
+    const player = gameRound.players[user.uid]
 
-    setChallengeDescription(currentChallengeDescription)
     setTotalUnitTests(gameRound.unitTests.length)
-    setPlayerSolution(gameRound.players[user.uid]?.currentSolution || "")
+    setPlayerSolution(player?.currentSolution || "")
+    setNumberOfSubmissions(player?.numberOfSubmissions)
+    setPassingUnitTests(player?.currentNumberOfPassingUnitTests)
 
     const _leaderboardData: LeaderBoardData = []
     for (const [playerId, playerSubmission] of Object.entries(
@@ -124,12 +123,11 @@ export default function GameView() {
           id: playerId,
           name: playerName,
           numberOfPassingUnitTests:
-            playerSubmission.numberOfPassingUnitTests || 0,
+            playerSubmission.currentNumberOfPassingUnitTests || 0,
           totalUnitTests: gameRound.unitTests.length,
         })
       }
     }
-
     _leaderboardData.sort((a, b) => {
       if (!a.numberOfPassingUnitTests) {
         return 1
@@ -141,8 +139,20 @@ export default function GameView() {
     })
     setLeaderbordData(_leaderboardData)
 
-    if (gameRoom.gameHasStarted) {
-      setStatus(Status.CODING)
+    if (gameRound.players[user.uid].isFinished) {
+      setRoundStatus(RoundStatus.Finished)
+      return
+    }
+
+    if (!gameRound.players[user.uid].isFinished && gameRoom.gameHasStarted) {
+      setRoundStatus(RoundStatus.Coding)
+      const timer = window.setInterval(() => {
+        _setTimerValue((prevTimerValue) => prevTimerValue + 0.1)
+      }, 100)
+
+      return () => {
+        clearTimeout(timer)
+      }
     }
   }, [gameRoom])
 
@@ -165,14 +175,15 @@ export default function GameView() {
     <div className="flex overflow-hidden">
       <main className="flex-auto relative h-screen">
         <div className="px-8 py-6">
-          <Heading as="h1">Question 1</Heading>
-          {challengeDescription}
+          <Heading as="h1">Question {gameRoom.currentGameRound + 1}</Heading>
+          {gameRoom.gameRounds[gameRoom.currentGameRound].description}
         </div>
         <Editor
           height="100%"
           theme="vs-dark"
           defaultLanguage="typescript"
           defaultValue={playerSolution}
+          options={{ readOnly: roundStatus === RoundStatus.Finished }}
           onChange={(val) => updatePlayerCode(val || "")}
         />
         {!gameRoom.gameHasStarted && (
@@ -197,7 +208,8 @@ export default function GameView() {
             </Level>
             <ul>
               <li>
-                <Heading as="h4">Number of attempts</Heading>2
+                <Heading as="h4">Number of attempts</Heading>
+                {numberOfSubmissions}
               </li>
               <li>
                 <Heading as="h4">Time elapsed</Heading>
