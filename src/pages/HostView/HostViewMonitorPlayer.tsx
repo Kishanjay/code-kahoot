@@ -1,6 +1,7 @@
 import React from "react"
 import { Heading, Level } from "../../components"
 import { GameRoundPlayerSubmission } from "../../models/gameRoundPlayerSubmission.model"
+import Editor from "@monaco-editor/react"
 
 export default function HostViewMonitorPlayer(props: any) {
   const playerSubmission: GameRoundPlayerSubmission = props.submission
@@ -8,17 +9,24 @@ export default function HostViewMonitorPlayer(props: any) {
   const playerName: string = props.name
 
   return (
-    <section className="border-2 flex-grow" data-attr-id={playerId}>
+    <section className="border-2 w-1/3" data-attr-id={playerId}>
       <Level>
         <Heading as="h1">{playerName}</Heading>
-        {playerSubmission?.isFinished && "Done"}
+        <div>
+          {playerSubmission.currentNumberOfPassingUnitTests}
+          <div>{playerSubmission.timeTaken}</div>
+        </div>
       </Level>
       {playerSubmission ? (
         <div>
-          <p>{playerSubmission.currentSolution}</p>
-          <div>{playerSubmission.currentNumberOfPassingUnitTests}</div>
+          <Editor
+            height="400px"
+            theme="vs-dark"
+            defaultLanguage="typescript"
+            value={playerSubmission.currentSolution}
+            options={{ readOnly: true }}
+          />
           <div>{playerSubmission.isFinished}</div>
-          <div>{playerSubmission.timeTaken}</div>
         </div>
       ) : (
         <div className="bg-gray-100">No submission</div>
